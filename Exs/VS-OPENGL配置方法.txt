@@ -1,0 +1,4 @@
+将下载的glutdlls.rar压缩包解开，将得到5个文件（glut.dll, glut32.dll, glut.lib, glut32.lib,glut.h）
+（1）把glut.h复制到VS2010安装目录\VC\include文件夹中。
+（2）把解压得到的glut.lib和glut32.lib放到静态函数库所在文件夹（即与include并排的lib文件夹下）。
+（3）把解压得到的glut.dll和glut32.dll放到操作系统目录下面的system32文件夹内。（典型的位置为：C:\Windows\System32, 64位操作系统为C:\Windows\SysWOW64）

@@ -1,0 +1,3 @@
+用glutwirecube函数画桌子
+
+glrotatef glscalef和gltranslatef进行旋转缩放和平移的变换
