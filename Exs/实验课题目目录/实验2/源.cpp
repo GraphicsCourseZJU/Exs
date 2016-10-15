@@ -5,9 +5,9 @@
 
 float fTranslate;
 float fRotate;
-float fScale     = 1.0f;	// set inital scale value to 1.0f
+float fScale     = 1.0f;								// set inital scale value to 1.0f
 
-void Draw_Triangle() // This function draws a triangle with RGB colors
+void Draw_Triangle()									// This function draws a triangle with RGB colors
 {
 	glBegin(GL_TRIANGLES);
 		 glColor3f(1.0f, 0.0f, 0.0f);
@@ -52,15 +52,15 @@ void redraw()
 	glLoadIdentity();									// Reset The Current Modelview Matrix
 	
 	glPushMatrix();
-		glTranslatef(-2.0f, 0.0f,-6.0f);		// Place the triangle Left
-		glTranslatef(0.0f, fTranslate, 0.0f);	// Translate in Y direction
-		Draw_Triangle();						// Draw triangle					
+		glTranslatef(-2.0f, 0.0f,-6.0f);				// Place the triangle Left
+		glTranslatef(0.0f, fTranslate, 0.0f);			// Translate in Y direction
+		Draw_Triangle();								// Draw triangle					
 	glPopMatrix();
 
     glPushMatrix();
-		glTranslatef(0.0f, 0.0f,-6.0f);			// Place the triangle at Center
-		glRotatef(fRotate, 0, 1.0f, 0);			// Rotate around Y axis
-		Draw_Triangle();						// Draw triangle
+		glTranslatef(0.0f, 0.0f,-6.0f);					// Place the triangle at Center
+		glRotatef(fRotate, 0, 1.0f, 0);					// Rotate around Y axis
+		Draw_Triangle();								// Draw triangle
 	glPopMatrix();
 
 
@@ -84,12 +84,12 @@ int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutInitWindowSize(640, 480);                                                     ///////////////////////////////////////
+	glutInitWindowSize(640, 480);               ///////////////////////////////////////
 	int windowHandle
 		= glutCreateWindow("Simple GLUT App");
 
 	glutDisplayFunc(redraw);
-	glutReshapeFunc(reshape);			///////////////////////////////////////
+	glutReshapeFunc(reshape);					///////////////////////////////////////
 	glutIdleFunc(idle);							///////////////////////////////////////
 
 	glutMainLoop();
