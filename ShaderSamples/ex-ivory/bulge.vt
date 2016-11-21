@@ -1,0 +1,43 @@
+
+uniform float    time;
+uniform float    frequency;
+uniform float    scaleFactor;
+uniform float3   Kd;
+uniform float    shininess;
+uniform float3   eyePosition;
+uniform float3   lightPosition;
+uniform float3   lightColor;
+
+float3 computeLighting(float3 lightPosition, 
+                       float3 lightColor,
+                       float3 Kd,
+                       float  shininess,
+                       float3 P,
+                       float3 N,
+                       float3 eyePosition) 
+{
+  // Compute the diffuse lighting
+  float3 L = normalize(lightPosition - P);
+  float diffuseLight = max(dot(N, L), 0);
+  float3 diffuseResult = Kd * lightColor * diffuseLight;
+  // Compute the specular lighting
+  float3 V = normalize(eyePosition - P);
+  float3 H = normalize(L + V);
+  float3 specularLight = lightColor * pow(max(dot(N, H), 0), 
+                                          shininess);
+  if (diffuseLight <= 0) specularLight = 0;
+  float3 specularResult = lightColor * specularLight;
+  return diffuseResult + specularResult;
+}
+
+void main()
+{
+  float displacement = scaleFactor * 0.5 * sin(gl_Vertex.y * frequency * time)+0.5;
+  float4 displacementDirection = float4(gl_Normal.x, gl_Normal.y, gl_Normal.z, 0);
+  float4 newPosition = gl_Vertex + displacement * displacementDirection;
+                       
+	gl_Position = gl_ModelViewProjectionMatrix*newPosition;
+  
+	gl_FrontColor.rgb = computeLighting(lightPosition, lightColor, Kd, shininess, newPosition.xyz, gl_Normal, eyePosition);
+	gl_FrontColor.a = 1;
+}
