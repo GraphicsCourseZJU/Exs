@@ -1,0 +1,9 @@
+﻿  ogl3.cpp
+  stanford_bunny.cpp
+src\stanford_bunny.cpp(13539): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码
+  71 of 76 functions (93.4%) were compiled, the rest were copied from previous compilation.
+    61 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  ExShader.vcxproj -> I:\master1\图形学助教\Exs\ShaderSamples\ExShader\Release\ExShader.exe
