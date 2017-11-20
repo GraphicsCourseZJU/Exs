@@ -1,6 +1,6 @@
-// glutEx1.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+// glutEx1.cpp : å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 //
-//×¢ÒâFPSº¯ÊıµÄÓ¦ÓÃ
+//æ³¨æ„FPSå‡½æ•°çš„åº”ç”¨
 
 #include <stdlib.h>
 #include "glut.h"
@@ -9,53 +9,54 @@
 
 #include "stanford_bunny.h"
 
-float fTranslate;
-float fRotate;
-float fScale     = 1.0f;	// set inital scale value to 1.0f
+float eye[] = {0, 4, 6};
+float center[] = {0, 0, 0};
 float fDistance = 0.2f;
-
-bool bPersp = false;
+float fRotate = 0;
 bool bAnim = false;
-bool bWire = false;
 
 bool bDrawList = false;
-
-int wHeight = 0;
-int wWidth = 0;
-
 GLint tableList=0;
 
-void Draw_Leg();
+void DrawTable()
+{
+	glPushMatrix();
+	glTranslatef(0, 3.5, 0);
+	glScalef(5, 1, 4);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(1.5, 1.5, 1);
+	glScalef(1, 3, 1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-1.5, 1.5, 1);
+	glScalef(1, 3, 1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(1.5, 1.5, -1);
+	glScalef(1, 3, 1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-1.5, 1.5, -1);
+	glScalef(1, 3, 1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+}
+
 GLint GenTableList()
 {
 	GLint lid=glGenLists(1);
 	glNewList(lid, GL_COMPILE);
 
-    glPushMatrix();
-	glTranslatef(0, 0, 3.5);
-	glScalef(5, 4, 1);
-	glutSolidCube(1.0);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(1.5, 1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(-1.5, 1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
-	
-	glPushMatrix();
-	glTranslatef(1.5, -1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
-	
-	glPushMatrix();
-	glTranslatef(-1.5, -1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
+	DrawTable();
 
 	glEndList();
 	return lid;
@@ -66,70 +67,15 @@ void Draw_Table_List()
 	glCallList(tableList);
 }
 
-void Draw_Table() // This function draws a table and bunny with RGB colors
+void DrawScene()
 {
 	glPushMatrix();
-	glTranslatef(1.5, 0, 4+1);
-	glRotatef(90, 1, 0, 0);
-	glScalef(4,4,4);
-	glColor3f(0.5,0.5,0.5);
+	glTranslatef(1.5, 4.5, 0);
+	glScalef(2, 2, 2);
 	DrawBunny();
 	glPopMatrix();
-	
-	glPushMatrix();
-	glTranslatef(-1.5, 0, 4+1);
-	glRotatef(90, 1, 0, 0);
-	glutSolidTeapot(1);
-	glPopMatrix();
 
-	glPushMatrix();
-	glTranslatef(0, 0, 3.5);
-	glScalef(5, 4, 1);
-	glutSolidCube(1.0);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(1.5, 1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(-1.5, 1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
-	
-	glPushMatrix();
-	glTranslatef(1.5, -1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
-	
-	glPushMatrix();
-	glTranslatef(-1.5, -1, 1.5);
-	Draw_Leg();
-	glPopMatrix();
-
-}
-
-void Draw_Leg()
-{
-	glScalef(1, 1, 3);
-	glutSolidCube(1.0);
-}
-
-void updateView(int width, int height)
-{
-	glViewport(0,0,width,height);						// Reset The Current Viewport
-
-	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-	glLoadIdentity();									// Reset The Projection Matrix
-
-	float whRatio = (GLfloat)width/(GLfloat)height;
-	if (bPersp==1)
-        gluPerspective(45,1,1,100);	
-	else  
-	    glOrtho(-3 ,3, -3, 3,-100,100);
-
-	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+	DrawTable();
 }
 
 void reshape(int width, int height)
@@ -139,10 +85,15 @@ void reshape(int width, int height)
 		height=1;										// Making Height Equal One
 	}
 
-	wHeight = height;
-	wWidth = width;
+	glViewport(0,0,width,height);						// Reset The Current Viewport
 
-	updateView(wHeight, wWidth);
+	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+	glLoadIdentity();									// Reset The Projection Matrix
+
+	float whRatio = (GLfloat)width/(GLfloat)height;
+	gluPerspective(45, whRatio, 1, 1000);	
+
+	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 }
 
 void idle()
@@ -150,40 +101,58 @@ void idle()
 	glutPostRedisplay();
 }
 
-float eye[] = {0, 0, 8};
-float center[] = {0, 0, 0};
-
 void key(unsigned char k, int x, int y)
 {
 	switch(k)
 	{
 	case 27:
 	case 'q': {exit(0); break; }
-	case 'p': {bPersp = !bPersp; updateView(560,560);break; }
 
-	case ' ': {bAnim = !bAnim; break;}
-	case 'o': {bWire = !bWire; break;}
-
-	case 'a': {eye[0]=eye[0]+fDistance;center[0]=center[0]+fDistance;
-		break;
-			  }
-	case 'd': {eye[0]=eye[0]-fDistance;center[0]=center[0]-fDistance;
-		break;
-			  }
-	case 'w': {eye[1]=eye[1]-fDistance;center[1]=center[1]-fDistance;
-        break;
-			  }
-	case 's': {eye[1]=eye[1]+fDistance;center[1]=center[1]+fDistance;
-		break;
-			  }
-	case 'z': {eye[2]=eye[2]*0.95;
-		break;
-			  }
-	case 'c': {eye[2]=eye[2]*1.05;
-		break;
-			  }
-	case 'l': bDrawList = !bDrawList;	// ÇĞ»»ÏÔÊ¾ÁĞ±íºÍ·ÇÏÔÊ¾ÁĞ±í»æÖÆ·½Ê½
-		break;
+	case 'a': 
+		{
+			eye[0] += fDistance; 
+			center[0] += fDistance;
+			break;
+		}
+	case 'd': 
+		{
+			eye[0] -= fDistance;
+			center[0] -= fDistance;
+			break;
+		 }
+	case 'w': 
+		{
+			eye[1] -= fDistance;
+			center[1] -= fDistance; 
+			break;
+		}
+	case 's': 
+		{
+			eye[1] += fDistance;
+			center[1] += fDistance;
+			break;
+		}
+	case 'z': 
+		{
+			eye[2] *= 0.95;
+			break; 
+		}
+	case 'c': 
+		{
+			eye[2] *= 1.05;
+			break;
+		 }
+	case 'l':
+		{
+			bDrawList = !bDrawList;	// åˆ‡æ¢æ˜¾ç¤ºåˆ—è¡¨å’Œéæ˜¾ç¤ºåˆ—è¡¨ç»˜åˆ¶æ–¹å¼
+			break;
+		}
+	case ' ':
+		{
+			bAnim = !bAnim; 
+			break;
+		}
+	default: break;
 	}
 }
 
@@ -194,85 +163,69 @@ void getFPS()
 
 	char mode[64];
 	if (bDrawList)
-		strcpy_s(mode, "display list");
+		strcpy(mode, "display list");
 	else
-		strcpy_s(mode, "naive");
+		strcpy(mode, "naive");
 
 	frame++;
 	time=glutGet(GLUT_ELAPSED_TIME);
 	if (time - timebase > 1000) {
-		sprintf_s(buffer,"FPS:%4.2f %s",
+		sprintf(buffer,"FPS:%4.2f %s",
 			frame*1000.0/(time-timebase), mode);
 		timebase = time;		
 		frame = 0;
 	}
 
-	//glutSetWindowTitle(buffer);
 	char *c;
 	glDisable(GL_DEPTH_TEST);
-	glMatrixMode(GL_PROJECTION);// Ñ¡ÔñÍ¶Ó°¾ØÕó
-	glPushMatrix();// ±£´æÔ­¾ØÕó
-	glLoadIdentity();// ×°Èëµ¥Î»¾ØÕó
-	glOrtho(0,480,0,480,-1,1);// Î»ÖÃÕıÍ¶Ó°
-	glMatrixMode(GL_MODELVIEW);// Ñ¡ÔñModelview¾ØÕó
-	glPushMatrix();// ±£´æÔ­¾ØÕó
-	glLoadIdentity();// ×°Èëµ¥Î»¾ØÕó*/
+	glMatrixMode(GL_PROJECTION);  // é€‰æ‹©æŠ•å½±çŸ©é˜µ
+	glPushMatrix();               // ä¿å­˜åŸçŸ©é˜µ
+	glLoadIdentity();             // è£…å…¥å•ä½çŸ©é˜µ
+	glOrtho(0,480,0,480,-1,1);    // ä½ç½®æ­£æŠ•å½±
+	glMatrixMode(GL_MODELVIEW);   // é€‰æ‹©ModelviewçŸ©é˜µ
+	glPushMatrix();               // ä¿å­˜åŸçŸ©é˜µ
+	glLoadIdentity();             // è£…å…¥å•ä½çŸ©é˜µ
 	glRasterPos2f(10,10);
 	for (c=buffer; *c != '\0'; c++) {		
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
 	}
-	glMatrixMode(GL_PROJECTION);// Ñ¡ÔñÍ¶Ó°¾ØÕó
-	glPopMatrix();// ÖØÖÃÎªÔ­±£´æ¾ØÕó
-	glMatrixMode(GL_MODELVIEW);// Ñ¡ÔñModelview¾ØÕó
-	glPopMatrix();// ÖØÖÃÎªÔ­±£´æ¾ØÕó
+	glMatrixMode(GL_PROJECTION);  // é€‰æ‹©æŠ•å½±çŸ©é˜µ
+	glPopMatrix();                // é‡ç½®ä¸ºåŸä¿å­˜çŸ©é˜µ
+	glMatrixMode(GL_MODELVIEW);   // é€‰æ‹©ModelviewçŸ©é˜µ
+	glPopMatrix();                // é‡ç½®ä¸ºåŸä¿å­˜çŸ©é˜µ
 	glEnable(GL_DEPTH_TEST);	
 }
 
 void redraw()
 {
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0, 0.5, 0, 1);
 	glLoadIdentity();									// Reset The Current Modelview Matrix
 
 	gluLookAt(eye[0], eye[1], eye[2],
 		center[0], center[1], center[2],
-		0, 1, 0);				// ³¡¾°£¨0£¬0£¬0£©µÄÊÓµãÖĞĞÄ (0,5,50)£¬YÖáÏòÉÏ
-
-	if (bWire) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
+		0, 1, 0);				// åœºæ™¯ï¼ˆ0ï¼Œ0ï¼Œ0ï¼‰çš„è§†ç‚¹ä¸­å¿ƒ (0, 5, 50)ï¼ŒYè½´å‘ä¸Š
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-    GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light_pos[] = {5,5,5,1};
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,white);
+	GLfloat gray[] = { 0.4, 0.4, 0.4, 1.0 };
+	GLfloat light_pos[] = {10, 10, 10, 1};
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,gray);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, white);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, gray);
 	glEnable(GL_LIGHT0);
 
-	
-	
-//	glTranslatef(0.0f, 0.0f,-6.0f);			// Place the triangle at Center
+	if (bAnim) 
+		fRotate += 0.5f;
 	glRotatef(fRotate, 0, 1.0f, 0);			// Rotate around Y axis
-	glRotatef(-90, 1, 0, 0);
-	glScalef(0.2, 0.2, 0.2);
 
+	glScalef(0.4, 0.4, 0.4);
 	if(!bDrawList)
-		Draw_Table();						// old way
+		DrawScene();						// old way
 	else 
 		Draw_Table_List();                  // new way
 
-//	Gen3DObjectList();
-
-	
-	if (bAnim) fRotate    += 0.5f;
-
 	getFPS();
-
 	glutSwapBuffers();
 }
 
@@ -281,7 +234,7 @@ int main (int argc,  char *argv[])
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(480,480);
-	int windowHandle = glutCreateWindow("Simple GLUT App");
+	int windowHandle = glutCreateWindow("Exercise 4");
 
 	glutDisplayFunc(redraw);
 	glutReshapeFunc(reshape);	
