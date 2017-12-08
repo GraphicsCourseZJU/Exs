@@ -1,0 +1,2 @@
+three.js没有提供茶壶teapot函数，需要自行从obj导入进行绘制，obj文件已经提供
+用于导入obj模型的OBJLoader.js文件请自行下载
